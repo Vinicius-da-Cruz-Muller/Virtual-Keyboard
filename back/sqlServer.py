@@ -6,7 +6,7 @@ class SQLServer:
         self.server = 'Mindinho'
         self.database = 'Advanced'
         self.user = 'vini1'
-        self.senha = '18080812'
+        self.senha = 'senhasenha'
         self.conexao = None
         self.cursor = None
         self.conexaoBanco()
@@ -29,7 +29,7 @@ class SQLServer:
     def inserirDadosUsuario(self,agencia,conta,senha):
         self.conexaoBanco()
         if len(senha) < 4:
-            return "Senha curta"
+            return "Senha muito curta"
         query = f"insert into Usuarios(agencia,conta,senha,ultima_vez_logado) values ('{agencia}',{conta},'{senha}',GETDATE())"
         self.cursor.execute(query)
         self.cursor.commit()
