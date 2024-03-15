@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+body{
+    background-color: purple;
+}
+
+div#form_background{
+    background-color: purple;
+    margin: 10% 10% 25%;
+}
