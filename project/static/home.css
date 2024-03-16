@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+body{
+    background-color: #FEEAFA;
+}
+
+div#form_background{
+    background-color: #DEE2FF;
+    margin: 10% 10% 25%;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 2px 5px 5px grey;
+}
+
+div#form{
+    background-color: #EFD3D7;
+    margin: 5px;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    padding: 30px;
+}
+
+label{
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+input{
+    border-radius: 20px;
+    font-size: 20px;
+
+}
+
+input:focus{
+    background-color: #DEE2FF;
+    color: grey;
+}
+
+button{
+    font-size: 20px;
+    border-radius: 20px;
+    background-color: #DEE2FF;
+}
+
+button:hover{
+    background-color: #FEEAFA;
+}
