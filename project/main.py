@@ -50,6 +50,15 @@ def login():
 def usuarios():
     return render_template("usuarios.html")
 
+@app.route('/path')
+def path():
+    return render_template("cadastrar.html")
+
+@app.route('/show_login_form')
+def show_login_form():
+    return render_template('login.html')
+
+
 @app.route('/cadastrarUsuario', methods = ['POST'])
 def cadastrarUsuario():
     mydb = pool.get_connection()
@@ -63,10 +72,10 @@ def cadastrarUsuario():
         flash("Usuário cadastrado com sucesso!")
         if mydb.is_connected():
             mydb.close()
-        return redirect('/usuarios')
+        return redirect('/show_login_form')
     else:
         flash("Erro ao cadastrar usuário")
-        return redirect('/login')
+        return redirect('/path')
 
     
 
