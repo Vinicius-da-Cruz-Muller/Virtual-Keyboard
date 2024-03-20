@@ -1,49 +1,115 @@
 from flask import Flask, render_template, redirect, request, flash
 import mysql.connector
+from datetime import datetime
+import bcrypt
+
+
+from servidor import Servidor
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'PASSPASS'
 
-pool = mysql.connector.pooling.MySQLConnectionPool(
-    host="localhost",
-    user="root",
-    password="Semestre202301",
-    database="users",
-    pool_size=32,
-)
+# pool = mysql.connector.pooling.MySQLConnectionPool(
+#     host="localhost",
+#     user="root",
+#     password="Semestre202301",
+#     database="users",
+#     pool_size=32,
+# )
+servidor = Servidor()
+
 
 @app.route('/')
 def home():
     return render_template('login.html')
 
+
+# @app.route('/login', methods=['POST']) ------------------Última versão estável
+# def login():
+#   cont = 0
+#   user = request.form.get('user')
+#   senha = request.form.get('senha')
+
+#   try:
+#     mydb = servidor.conecta()
+
+#     if mydb.is_connected():
+#       cursor = mydb.cursor()
+#       cursor.execute('SELECT * FROM usuario;')
+#       usuariosBD = cursor.fetchall()
+
+#       for usuario in usuariosBD:
+#         cont += 1
+#         usuarioUser = str(usuario[1])
+#         usuarioSenha = str(usuario[2])
+
+#         # Validação da senha com bcrypt
+#         if usuarioUser == user and usuarioSenha == senha:
+#           return redirect('/usuarios')
+
+#       if cont >= len(usuariosBD):
+#         return redirect('/')
+
+#       cursor.close()
+#       mydb.close()
+
+#   except Exception as e:
+#     print(f"Erro ao executar a consulta: {e}")
+#     return redirect('/')
+
+#   return redirect('/')
+
 @app.route('/login', methods=['POST'])
 def login():
-    cont = 0
-    user = request.form.get('user')
-    senha = request.form.get('senha')
-    
-    mydb = pool.get_connection()
+  cont = 0
+  user = request.form.get('user')
+  senha = request.form.get('senha')
+
+  try:
+    # Conexão com o banco de dados
+    mydb = servidor.conecta()
+    query = f"SELECT * FROM usuario WHERE user = '{user}';"
 
     if mydb.is_connected():
-        print('conectado')
-        cursor = mydb.cursor()
-        cursor.execute('SELECT * FROM usuario;')
-        usuariosBD = cursor.fetchall()
+      cursor = mydb.cursor()
+      cursor.execute(query)
+      usuarioBD = cursor.fetchall()
 
-        for usuario in usuariosBD:
-            cont += 1
-            usuarioUser = str(usuario[1])
-            usuarioSenha = str(usuario[2])
+      if len(usuarioBD) <=0:
+        print("Conta não encontrada")
+        return False, 'Conta não encontrada'
+      
+      hash_senha = usuarioBD[0][2]
+      senha_bytes = senha.encode('utf-8')
+      hashed_password_bytes = hash_senha.encode('utf-8')
+      
+      print(hash_senha)
+      print(senha)
+      if bcrypt.checkpw(senha_bytes, hashed_password_bytes):
+        return redirect('/usuarios')
+      
+    #   hash_senha = usuarioBD[0][0]
+    #   a = [senha[0], senha[1]]
+    #   b = [senha[2], senha[3]]
+    #   c = [senha[4], senha[5]]
+    #   d = [senha[6], senha[7]]
+    #   e = [senha[8], senha[9]]
+    #   for i in a:
+    #       for j in b:
+    #           for k in c:
+    #               for l in d:
+    #                   for m in e:
+    #                       SenhaVerif = f"{i}{j}{k}{l}{m}"
+    #                       if bcrypt.verify(SenhaVerif, hash_senha):
+    #                           return redirect('/usuarios')
+      return False, 'Senha incorreta'
 
-            if usuarioUser == user and usuarioSenha == senha:
-                return redirect('/usuarios')
-            
-            if cont >= len(usuariosBD):
-                return redirect('/')
-            
-        cursor.close()
-        mydb.close()
+    cursor.close()
+    mydb.close()
+
     
+  except Exception as ex:
+    print(f"Erro ao executar a consulta: {ex}")
     return redirect('/')
 
 @app.route('/usuarios')
@@ -61,22 +127,37 @@ def show_login_form():
 
 @app.route('/cadastrarUsuario', methods = ['POST'])
 def cadastrarUsuario():
-    mydb = pool.get_connection()
-    user = request.form.get('user')
-    senha = request.form.get('senha')
-    cursor = mydb.cursor()
-    cursor.execute(f"INSERT INTO usuario VALUES (default, '{user}', '{senha}');")
-    mydb.commit()
+    try:
+        mydb = servidor.conecta()
+        user = request.form.get('user')
+        senha = request.form.get('senha')
+        data_hora_atual = datetime.now()
 
-    if cursor.rowcount > 0:
-        flash("Usuário cadastrado com sucesso!")
-        if mydb.is_connected():
-            mydb.close()
-        return redirect('/show_login_form')
-    else:
-        flash("Erro ao cadastrar usuário")
-        return redirect('/path')
+        if len(senha) < 4 or len(senha) > 10:
+            print("A senha deve ter entre 4 e 10 caracteres.")
+            return redirect('/path')
+        if not all(char.isdigit() for char in senha):
+            print("A senha deve conter apenas números.")
+            return redirect('/path')
+        
+        hashed_senha = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt(6))
+        cursor = mydb.cursor(prepared = True)
+        # cursor.execute(f"INSERT INTO usuario VALUES (default, '{user}', '{hashed_senha}', '{data_hora_atual}');")
+        sql = f"INSERT INTO usuario VALUES (default, %s, %s, %s);"
+        cursor.execute(sql, (user, hashed_senha, data_hora_atual))
+        mydb.commit()
+        print("Usuário cadastrado com sucesso")
+    except mysql.connector.errors.IntegrityError as e:
+        if 'Duplicate entry' in e.args[1]:
+            print("Usuário já cadastrado!")
+        else:
+            print("Erro ao cadastrar usuário")
+        return redirect('/path') 
 
+    if mydb.is_connected():
+        mydb.close()
+
+    return redirect('/show_login_form')
     
 
 if __name__ == '__main__':
