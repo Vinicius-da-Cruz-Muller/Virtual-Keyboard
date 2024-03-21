@@ -35,6 +35,7 @@ def home():
 
 
 
+
 @app.route('/criarSessoes', methods = ['GET'])
 def CriarSessoes():
    try:
@@ -166,6 +167,16 @@ def cadastrarUsuario():
     try:
         mydb = servidor.conecta()
         user = request.form.get('user')
+        mydb = servidor.conecta()
+        cursor = mydb.cursor()
+        cursor.execute("SELECT user FROM usuario WHERE user = %s", (user,))
+        usuario_existente = cursor.fetchone()
+        # cursor.close()
+        # mydb.close()
+
+        if usuario_existente:
+            print("Usuário já cadastrado!")
+            return redirect('/path')
         senha = request.form.get('senha')
         data_hora_atual = datetime.now()
 

@@ -51,12 +51,17 @@ class Servidor:
             print(f"Erro ao executar consulta: {e}")
 
     def inserirSessoes(self, hashEntrada, ordemNumeros):
-        mydb = self.pool.get_connection()
-        data_hora_atual = datetime.now()
-        query = f"INSERT INTO Sessoes(hash, ordem, disponivel, ultima_vez_usado) VALUES ('{hashEntrada}', '{ordemNumeros}', 1, '{data_hora_atual}')"
-        self.cursor.execute(query)
-        self.cursor.commit()
-        mydb.close()
+        try:
+
+            mydb = self.pool.get_connection()
+            data_hora_atual = datetime.now()
+            query = f"INSERT INTO sessoes(hash, ordem, disponivel, ultima_vez_usado) VALUES ('{hashEntrada}', '{ordemNumeros}', 1, '{data_hora_atual}')"
+            self.cursor.execute(query)
+            self.cursor.commit()
+            mydb.close()
+            print("Deu certo!")
+        except Exception as e:
+            print(f"Erro ao executar consulta: {e}")
 
     def AtualizarRegistro(self, tabela, colunas, condicao):
         try:
@@ -75,3 +80,4 @@ class Servidor:
                 self.AtualizarRegistro('Sessoes', 'disponivel = 1', f"id = '{idRetornado[0]}'")
         except Exception as e:
             print(f"Erro ao executar consulta: {e}")
+
