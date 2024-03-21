@@ -4,6 +4,7 @@ const senhaInput = document.getElementById('pass');
 const btnLogin = document.getElementById('btn_login');
 const delete_btn = document.querySelector('.delete');
 
+
 let passwordChars = [];
 
 buttons.forEach(btn =>{
@@ -15,6 +16,7 @@ buttons.forEach(btn =>{
         console.log(senhaInput.value)
     });
 });
+
 
 delete_btn.addEventListener('click', () =>{
     if (passwordChars.length > 0){

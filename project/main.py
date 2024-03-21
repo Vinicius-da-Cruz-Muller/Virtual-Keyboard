@@ -24,9 +24,15 @@ sessoes = Sessoes()
 
 warnings.filterwarnings("ignore", category = UserWarning)
 
+# @app.route('/')
+# def home():
+#     return render_template('login.html')
+
 @app.route('/')
 def home():
-    return render_template('login.html')
+  sequencia_aleatoria = Sessoes().gerar_sequencia()
+  return render_template('login.html', sequencia=sequencia_aleatoria)
+
 
 
 @app.route('/criarSessoes', methods = ['GET'])
@@ -180,6 +186,7 @@ def cadastrarUsuario():
     except mysql.connector.errors.IntegrityError as e:
         if 'Duplicate entry' in e.args[1]:
             print("Usuário já cadastrado!")
+            return redirect('/path') 
         else:
             print("Erro ao cadastrar usuário")
         return redirect('/path') 
