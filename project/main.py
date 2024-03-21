@@ -1,10 +1,12 @@
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, jsonify
 import mysql.connector
 from datetime import datetime
 import bcrypt
+import warnings
 
 
 from servidor import Servidor
+from sessoes import Sessoes
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'PASSPASS'
@@ -17,11 +19,34 @@ app.config['SECRET_KEY'] = 'PASSPASS'
 #     pool_size=32,
 # )
 servidor = Servidor()
+sessoes = Sessoes()
 
+
+warnings.filterwarnings("ignore", category = UserWarning)
 
 @app.route('/')
 def home():
     return render_template('login.html')
+
+
+@app.route('/criarSessoes', methods = ['GET'])
+def CriarSessoes():
+   try:
+      Sessoes().GerarSessoes()
+      return jsonify({"Mensagem": "Conta autenticada com sucesso"}), int(200)
+   except Exception as erro:
+      return 'Ocorreu um erro desconhecido', 500
+   
+
+@app.route('/buscarSessao', methods = ['GET'])
+def BuscarSessao():
+   try:
+      endereco_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+      print("Endereço ip: " +str(endereco_ip))
+      HashRetorno, OrdemRetorno = Sessoes().BuscarSessaoValida()
+      return jsonify({"Hash: ": HashRetorno, 'Ordem': OrdemRetorno}), int(200)
+   except Exception as erro:
+      return 'Ocorreu um erro desconhecido', 500
 
 
 # @app.route('/login', methods=['POST']) ------------------Última versão estável
@@ -61,7 +86,7 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
-  cont = 0
+#   cont = 0
   user = request.form.get('user')
   senha = request.form.get('senha')
 
@@ -87,6 +112,12 @@ def login():
       print(senha)
       if bcrypt.checkpw(senha_bytes, hashed_password_bytes):
         return redirect('/usuarios')
+      else:
+         print("Senha incorreta")
+         return redirect('/')
+         
+    
+
       
     #   hash_senha = usuarioBD[0][0]
     #   a = [senha[0], senha[1]]
@@ -102,8 +133,7 @@ def login():
     #                       SenhaVerif = f"{i}{j}{k}{l}{m}"
     #                       if bcrypt.verify(SenhaVerif, hash_senha):
     #                           return redirect('/usuarios')
-      return False, 'Senha incorreta'
-
+      
     cursor.close()
     mydb.close()
 
