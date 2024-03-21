@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="../static/home.css">
 </head>
 <body>
-    <div id="form_background">
-        <div id="form">
-            <h1>Login</h1>
+    <div id="form">
+            <div id="titulo">
+                senha eletrônica
+            </div>
             <form action="/login" id ="login" method="post">
                 <label for="user">Usuário</label>
                 <input type="text" name="user" id="user" required placeholder="Digite seu usuário"><br>
@@ -17,9 +18,8 @@
                 <input type="password" name="senha" id="senha" required placeholder="Use o teclado virtual para inserir sua senha!"><br>
                 <button type="submit" id="btn_login">ENTRAR</button>
             </form>
-        </div>
         <div id="cadastro">
-            <h2>Novo aqui?</h2>
+            <h2>novo aqui?</h2>
             <form>
                 <button type="submit" formaction="/path" id="redirect">Cadastrar</button>
             </form>
