@@ -22,5 +22,5 @@ Para executar o serviço é necessário configurar as variáveis de ambiente:
 # Alterações e testes
 
 Toda alteração no código deve ser realizada respeitando o processo de Git Flow definido.
-
+#
 Os testes automatizados são executados através da ferramenta pytest.
