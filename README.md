@@ -15,10 +15,6 @@ Detalhes da stack e integrações:
 - `Persistência de dados em MySQL`: Uso da biblioteca mysql-connector-python. MySQL oferece recursos de segurança robustos, incluindo autenticação, autorização e criptografia de dados, para proteger seus dados contra acesso não autorizado e ataques.
 - `Uso do algoritmo bcrypt`: Algoritmo de hash e criptografia. Uso da biblioteca bcrypt.
 
-# Execução do código
-
-Para executar o serviço é necessário configurar as variáveis de ambiente:
-
 # Alterações e testes
 
 Toda alteração no código deve ser realizada respeitando o processo de Git Flow definido.
