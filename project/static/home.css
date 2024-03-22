@@ -58,7 +58,7 @@ button{
     padding: .5rem 1rem;
     margin: .3rem;
     color: white;
-    width: 100px;
+    width: 150px;
     height: 50px;
 }
 
@@ -70,7 +70,7 @@ button{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 
@@ -104,5 +104,11 @@ button{
 /* .textarea {
     display: none;
   } */
-  
+
+iframe{
+    position: fixed;
+    top: 25px;;
+    left: 0;
+    z-index: 999;
+}
 

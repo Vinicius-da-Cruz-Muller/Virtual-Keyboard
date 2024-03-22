@@ -8,13 +8,27 @@ const delete_btn = document.querySelector('.delete');
 let passwordChars = [];
 
 buttons.forEach(btn =>{
-    btn.addEventListener('click', ()=>{
-        passwordChars.push(btn.innerText);
-        senhaInput.value = passwordChars.join('');
+    // btn.addEventListener('click', ()=>{
+    //     passwordChars.push(btn.innerText);
+    //     senhaInput.value = passwordChars.join('');
+    //     senhaInput.dispatchEvent(new Event('input'));
+    //     console.log(passwordChars)
+    //     console.log(senhaInput.value)
+    // });
+    btn.addEventListener('click', () => {
+        // Extrai apenas os números do texto do botão
+        const numbers = btn.innerText.match(/\d+/g);
+        // Converte a lista de números em string separada por vírgula
+        const numberString = numbers.join(',');
+        // Adiciona a string de números à lista de caracteres da senha
+        passwordChars.push(numberString);
+        // Atualiza o valor do campo de senha
+        senhaInput.value = passwordChars.join(',');
+        // Dispara o evento 'input' para atualizar a validação do campo
         senhaInput.dispatchEvent(new Event('input'));
-        console.log(passwordChars)
-        console.log(senhaInput.value)
-    });
+        console.log(passwordChars);
+        console.log(senhaInput.value);
+      });
 });
 
 

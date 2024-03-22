@@ -91,7 +91,7 @@ def BuscarSessao():
 
 #   return redirect('/')
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
 #   cont = 0
   user = request.form.get('user')
@@ -110,18 +110,28 @@ def login():
       if len(usuarioBD) <=0:
         print("Conta não encontrada")
         return False, 'Conta não encontrada'
+      numeros = list(filter(lambda char: char.isdigit(), senha))
+      a = [numeros[0], numeros[1]]
+      b = [numeros[2], numeros[3]]
+      c = [numeros[4], numeros[5]]
+      d = [numeros[6], numeros[7]]
+      for i in a:
+           for j in b:
+               for k in c:
+                   for l in d:
+                      senha_verif = f"{i}{j}{k}{l}"
+                    #   print(senha_verif)
+                      hash_senha = usuarioBD[0][2]
+                      senha_bytes = senha_verif.encode('utf-8')
+                      hashed_password_bytes = hash_senha.encode('utf-8')
       
-      hash_senha = usuarioBD[0][2]
-      senha_bytes = senha.encode('utf-8')
-      hashed_password_bytes = hash_senha.encode('utf-8')
-      
-      print(hash_senha)
-      print(senha)
-      if bcrypt.checkpw(senha_bytes, hashed_password_bytes):
-        return redirect('/usuarios')
-      else:
-         print("Senha incorreta")
-         return redirect('/')
+    #   print(hash_senha)
+    #   print(senha)
+                      if bcrypt.checkpw(senha_bytes, hashed_password_bytes):
+                         return redirect('/usuarios')
+                      
+      print("Senha incorreta")
+      return redirect('/')
          
     
 
@@ -157,9 +167,9 @@ def usuarios():
 def path():
     return render_template("cadastrar.html")
 
-@app.route('/show_login_form')
-def show_login_form():
-    return render_template('login.html')
+# @app.route('/show_login_form')
+# def show_login_form():
+#     return redirect('/login')
 
 
 @app.route('/cadastrarUsuario', methods = ['POST'])
@@ -180,8 +190,8 @@ def cadastrarUsuario():
         senha = request.form.get('senha')
         data_hora_atual = datetime.now()
 
-        if len(senha) < 4 or len(senha) > 10:
-            print("A senha deve ter entre 4 e 10 caracteres.")
+        if len(senha) != 4:
+            print("A senha deve ter entre 4 caracteres.")
             return redirect('/path')
         if not all(char.isdigit() for char in senha):
             print("A senha deve conter apenas números.")
@@ -205,7 +215,7 @@ def cadastrarUsuario():
     if mydb.is_connected():
         mydb.close()
 
-    return redirect('/show_login_form')
+    return redirect('/')
     
 
 if __name__ == '__main__':
