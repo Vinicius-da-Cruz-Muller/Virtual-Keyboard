@@ -183,7 +183,7 @@ def path():
 @app.route('/cadastrarUsuario', methods = ['POST'])
 def cadastrarUsuario():
     try:
-        mydb = servidor.conecta()
+        # mydb = servidor.conecta()
         user = request.form.get('user')
         mydb = servidor.conecta()
         cursor = mydb.cursor()
