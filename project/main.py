@@ -30,8 +30,16 @@ warnings.filterwarnings("ignore", category = UserWarning)
 
 @app.route('/')
 def home():
-  sequencia_aleatoria = Sessoes().gerar_sequencia()
-  return render_template('login.html', sequencia=sequencia_aleatoria)
+    sequencia_numeros = Sessoes().BuscarSessaoValida()
+    sequencia_numeros = int_to_list(sequencia_numeros)
+    print(sequencia_numeros)
+    return render_template('login.html', sequencia=sequencia_numeros)
+
+def int_to_list(number):
+    return [int(digit) for digit in str(number)]
+ 
+
+
 
 
 

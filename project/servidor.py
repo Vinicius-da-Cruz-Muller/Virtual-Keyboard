@@ -40,10 +40,11 @@ class Servidor:
     def buscarDado(self, tabela, coluna=1, condicao=None):
         try:
             mydb = self.pool.get_connection()
+            cursor = mydb.cursor()
             query = f"SELECT TOP 1 '{coluna}' FROM '{tabela}'"
             if condicao:
                 query += f" WHERE '{condicao}'"
-            self.cursor.execute(query)
+            cursor.execute(query)
             linhas = self.cursor.fetchall()
             mydb.close()
             return(linhas)
@@ -54,10 +55,11 @@ class Servidor:
         try:
 
             mydb = self.pool.get_connection()
-            data_hora_atual = datetime.now()
-            query = f"INSERT INTO sessoes(hash, ordem, disponivel, ultima_vez_usado) VALUES ('{hashEntrada}', '{ordemNumeros}', 1, '{data_hora_atual}')"
-            self.cursor.execute(query)
-            self.cursor.commit()
+            cursor = mydb.cursor()
+            data_hora_atual = datetime.datetime.now()
+            query = f"INSERT INTO sessoes(hash, ordem, disponivel, ultima_vez_usado) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query, (hashEntrada, ordemNumeros, 1, data_hora_atual))
+            mydb.commit()
             mydb.close()
             print("Deu certo!")
         except Exception as e:
@@ -67,8 +69,9 @@ class Servidor:
         try:
             mydb = self.pool.get_connection()
             query = f"UPDATE ´{tabela}' SET '{colunas}' WHERE '{condicao}'"
-            self.cursor.execute(query)
-            self.cursor.commit()
+            cursor = mydb.cursor()
+            cursor.execute(query)
+            mydb.commit()
             mydb.close()
         except Exception as e:
             print(f"Erro ao executar consulta: {e}")

@@ -7,6 +7,12 @@ const delete_btn = document.querySelector('.delete');
 
 let passwordChars = [];
 
+senhaInput.addEventListener('input', () => {
+    // Atualiza o valor do atributo value com asteriscos
+    senhaInput.setAttribute('value', senhaInput.value.replace(/./g, "*"));
+});
+
+
 buttons.forEach(btn =>{
     // btn.addEventListener('click', ()=>{
     //     passwordChars.push(btn.innerText);
@@ -26,6 +32,7 @@ buttons.forEach(btn =>{
         senhaInput.value = passwordChars.join(',');
         // Dispara o evento 'input' para atualizar a validação do campo
         senhaInput.dispatchEvent(new Event('input'));
+        console.log(numberString)
         console.log(passwordChars);
         console.log(senhaInput.value);
       });
