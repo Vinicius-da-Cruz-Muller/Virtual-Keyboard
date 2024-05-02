@@ -8,7 +8,7 @@ servidor = Servidor()
 class Sessoes():
     def gerar_sequencia(self):
         digitos_unicos = random.sample(range(10), 10)
-        print("Digitos unicos")
+        # print("Digitos unicos")
         # print(digitos_unicos)
         return ''.join(map(str, digitos_unicos))
     
